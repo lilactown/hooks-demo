@@ -59,4 +59,4 @@
          [UseState]
          [UseAtom]]))
 
-(react-dom/render (react/createElement App) (js/document.getElementById "app"))
+(react-dom/render (hx/c [App]) (js/document.getElementById "app"))
