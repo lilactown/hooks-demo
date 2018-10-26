@@ -18,7 +18,7 @@
             count]])))
 
 ;;
-;; Example using custom use-atom hook
+;; Example of a custom use-atom hook
 ;;
 
 (defn use-atom
