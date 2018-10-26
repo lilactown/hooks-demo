@@ -1,7 +1,7 @@
 (ns hooks-demo
   (:require ["react" :as react]
             ["react-dom" :as react-dom]
-            [sablono.core :refer-macros [html]]))
+            [hx.react :as hx :include-macros true]))
 
 (set! js/React react)
 
@@ -9,9 +9,9 @@
 ;; Example using new useState hook
 ;;
 
-(defn UseState []
+(hx/defnc UseState [_]
   (let [[count set-count] (react/useState 0)]
-    (html [:div
+    (hx/c [:div
            [:strong "UseState"]
            " "
            [:button {:on-click #(set-count (inc count))}
@@ -46,16 +46,17 @@
 
 (defonce my-state (atom 0))
 
-(defn UseAtom []
+(hx/defnc UseAtom [_]
   (let [count (use-atom my-state)]
-    (html [:div
+    (hx/c [:div
            [:strong "UseAtom"]
+           " "
            [:button {:on-click #(swap! my-state inc)}
             count]])))
 
-(defn App []
-  (html [:div
-         (UseState)
-         (UseAtom)]))
+(hx/defnc App [_]
+  (hx/c [:div
+         [UseState]
+         [UseAtom]]))
 
-(react-dom/render (react/createElement App) (js/document.getElementById "app"))
+(react-dom/render (hx/c [App]) (js/document.getElementById "app"))
