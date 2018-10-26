@@ -3,8 +3,6 @@
             ["react-dom" :as react-dom]
             [hx.react :as hx :include-macros true]))
 
-(set! js/React react)
-
 ;;
 ;; Example using new useState hook
 ;;
