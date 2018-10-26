@@ -1,0 +1,15 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src"]
+
+ :dependencies
+ [[sablono "0.8.4"]]
+
+ :builds
+ {:app {:target :browser
+        :output-dir "resources/public/js/"
+        :asset-path "/js/"
+        :devtools {:http-root "resources/public"
+                   :http-port 3689
+                   :http-resource-root "."}
+        :modules {:main {:entries [hooks-demo]}}}}}
