@@ -1,8 +1,7 @@
 (ns hooks-demo
   (:require ["react" :as react]
             ["react-dom" :as react-dom]
-            [sablono.core :refer-macros [html]]
-            [goog.object :as o]))
+            [sablono.core :refer-macros [html]]))
 
 (set! js/React react)
 
