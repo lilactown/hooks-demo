@@ -1,6 +1,6 @@
 (ns hooks-demo
   (:require ["react-dom" :as react-dom]
-            [hooks-demo.hooks :as hooks]
+            [hooks-demo.hooks :as hooks :refer [->state ->deref ->atom]]
             [hx.react :as hx :include-macros true]))
 
 ;;
@@ -8,7 +8,7 @@
 ;;
 
 (hx/defnc UseState [_]
-  (let [[count set-count] (hooks/!>state 0)]
+  (let [[count set-count] (->state 0)]
     (hx/c [:div
            [:strong "UseState"]
            " "
@@ -18,7 +18,7 @@
 (defonce my-state (atom 0))
 
 (hx/defnc UseDeref [_]
-  (let [count (hooks/!>deref my-state)]
+  (let [count (->deref my-state)]
     (hx/c [:div
            [:strong "UseDeref"]
            " "
@@ -26,7 +26,7 @@
             count]])))
 
 (hx/defnc UseAtom [_]
-  (let [count (hooks/!>atom 0)]
+  (let [count (->atom 0)]
     (hx/c [:div
            [:strong "UseAtom"]
            " "
