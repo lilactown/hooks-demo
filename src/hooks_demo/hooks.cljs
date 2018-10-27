@@ -1,23 +1,23 @@
 (ns hooks-demo.hooks
   (:require ["react" :as react]))
 
-(def ->state react/useState)
+(def =>state react/useState)
 
-(def ->effect react/useEffect)
+(def =>effect react/useEffect)
 
 ;;
 ;; Example of a custom with-atom hook
 ;;
 
-(defn ->deref
+(defn =>deref
   ;; if no deps are passed in, we assume we only want to run
   ;; subscrib/unsubscribe on mount/unmount
-  ([a] (->deref a []))
+  ([a] (=>deref a []))
   ([a deps]
    ;; create a react/useState hook to track and trigger renders
-   (let [[v u] (->state @a)]
+   (let [[v u] (=>state @a)]
      ;; react/useEffect hook to create and track the subscription to the iref
-     (->effect
+     (=>effect
       (fn []
         (println "adding watch")
         (add-watch a :use-atom
@@ -49,5 +49,8 @@
   (-swap! [o f]
     (-reset! o (f (-deref o)))))
 
-(defn ->atom [initial]
-  (State. (->state initial)))
+(defn =>! [f & args]
+  (State. (apply f args)))
+
+(defn =>!atom [initial]
+  (State. (=>state initial)))
