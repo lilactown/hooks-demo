@@ -1,6 +1,6 @@
 (ns hooks-demo
   (:require ["react-dom" :as react-dom]
-            [hooks-demo.hooks :as hooks :refer [=>state =>deref =>!atom]]
+            [hooks-demo.hooks :as hooks :refer [<-state <-deref <-!state]]
             [hx.react :as hx :include-macros true]))
 
 ;;
@@ -8,7 +8,7 @@
 ;;
 
 (hx/defnc UseStateHook [_]
-  (let [[count set-count] (=>state 0)]
+  (let [[count set-count] (<-state 0)]
     (hx/c [:div
            [:strong "useState Hook:"]
            " "
@@ -18,17 +18,17 @@
 (defonce my-state (atom 0))
 
 (hx/defnc DerefHook [_]
-  (let [count (=>deref my-state)]
+  (let [count (<-deref my-state)]
     (hx/c [:div
-           [:strong "=>deref Hook:"]
+           [:strong "<-deref Hook:"]
            " "
            [:button {:on-click #(swap! my-state inc)}
             count]])))
 
-(hx/defnc AtomHook [_]
-  (let [count (=>!atom 0)]
+(hx/defnc StateAtomHook [_]
+  (let [count (<-!state 0)]
     (hx/c [:div
-           [:strong "=>!atom Hook:"]
+           [:strong "<-!state Hook:"]
            " "
            [:button {:on-click #(swap! count inc)}
             @count]])))
@@ -37,6 +37,6 @@
   (hx/c [:div
          [UseStateHook]
          [DerefHook]
-         [AtomHook]]))
+         [StateAtomHook]]))
 
 (react-dom/render (hx/c [App]) (js/document.getElementById "app"))
