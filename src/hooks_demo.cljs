@@ -1,42 +1,36 @@
 (ns hooks-demo
   (:require ["react-dom" :as react-dom]
-            [hooks-demo.hooks :as hooks :refer [<-state <-deref <-!state]]
+            ["react" :as react]
+            [hooks-demo.hooks :as hooks :refer [<-state <-context]]
             [hx.react :as hx :include-macros true]))
 
-;;
-;; Example using new useState hook
-;;
+(defonce state-context (react/createContext))
 
-(hx/defnc UseStateHook [_]
-  (let [[count set-count] (<-state 0)]
+(def Provider (.-Provider state-context))
+
+(hx/defnc Display [_]
+  (let [{:keys [name count]} @(<-context state-context)]
+    (hx/c [:div name ": " count])))
+
+(hx/defnc Input [_]
+  (let [!state (<-context state-context)]
     (hx/c [:div
-           [:strong "useState Hook:"]
-           " "
-           [:button {:on-click #(set-count (inc count))}
-            count]])))
+           [:input {:type "text" :value (:name @!state)
+                    :on-change
+                    #(swap! !state assoc :name (.. % -target -value))}]])))
 
-(defonce my-state (atom 0))
-
-(hx/defnc DerefHook [_]
-  (let [count (<-deref my-state)]
+(hx/defnc CountButtons [_]
+  (let [!state (<-context state-context)]
     (hx/c [:div
-           [:strong "<-deref Hook:"]
-           " "
-           [:button {:on-click #(swap! my-state inc)}
-            count]])))
-
-(hx/defnc StateAtomHook [_]
-  (let [count (<-!state 0)]
-    (hx/c [:div
-           [:strong "<-!state Hook:"]
-           " "
-           [:button {:on-click #(swap! count inc)}
-            @count]])))
+           [:button {:on-click #(swap! !state update :count inc)} "inc"]
+           [:button {:on-click #(swap! !state update :count dec)} "dec"]])))
 
 (hx/defnc App [_]
-  (hx/c [:div
-         [UseStateHook]
-         [DerefHook]
-         [StateAtomHook]]))
+  (let [!state (<-state {:name "Will" :count 1})]
+    (hx/c [Provider {:value !state}
+           [:div
+            [Display]
+            [Input]
+            [CountButtons]]])))
 
 (react-dom/render (hx/c [App]) (js/document.getElementById "app"))
