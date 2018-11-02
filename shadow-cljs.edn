@@ -3,7 +3,7 @@
  ["src"]
 
  :dependencies
- [[lilactown/hx "0.1.0"]]
+ [[lilactown/hx "0.2.2"]]
 
  :builds
  {:app {:target :browser

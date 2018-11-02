@@ -9,11 +9,11 @@
 
 (hx/defnc UseState [_]
   (let [[count set-count] (react/useState 0)]
-    (hx/c [:div
-           [:strong "UseState"]
-           " "
-           [:button {:on-click #(set-count (inc count))}
-            count]])))
+    [:div
+     [:strong "UseState"]
+     " "
+     [:button {:on-click #(set-count (inc count))}
+      count]]))
 
 ;;
 ;; Example of a custom use-atom hook
@@ -46,15 +46,15 @@
 
 (hx/defnc UseAtom [_]
   (let [count (use-atom my-state)]
-    (hx/c [:div
-           [:strong "UseAtom"]
-           " "
-           [:button {:on-click #(swap! my-state inc)}
-            count]])))
+    [:div
+     [:strong "UseAtom"]
+     " "
+     [:button {:on-click #(swap! my-state inc)}
+      count]]))
 
 (hx/defnc App [_]
-  (hx/c [:div
-         [UseState]
-         [UseAtom]]))
+  [:div
+   [UseState]
+   [UseAtom]])
 
-(react-dom/render (hx/c [App]) (js/document.getElementById "app"))
+(react-dom/render (hx/f [App]) (js/document.getElementById "app"))
