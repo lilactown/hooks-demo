@@ -1,6 +1,8 @@
 (ns hooks-demo
   (:require ["react" :as react]
             ["react-dom" :as react-dom]
+            [reagent.core]
+            [re-frame.core]
             [hx.react :as hx :include-macros true]))
 
 ;;
@@ -52,9 +54,47 @@
      [:button {:on-click #(swap! my-state inc)}
       count]]))
 
+;;
+;; Example of using re-frame subscriptions
+;;
+
+(defn <-sub
+  ([query]
+    (<-sub query []))
+  ([query deps]
+    (let [r (react/useMemo
+              #(re-frame.core/subscribe query)
+              (clj->js deps))
+          [v u] (react/useState @r)]
+      (react/useEffect
+        (fn []
+          (let [t (reagent.core/track! #(u @r))]
+            #(reagent.core/dispose! t)))
+        (clj->js deps))
+      v)))
+
+(re-frame.core/reg-event-db
+  :inc
+  (fn [db _]
+    (update db :counter (fnil inc 0))))
+
+(re-frame.core/reg-sub
+  :counter
+  (fn [db _]
+    (:counter db 0)))
+
+(hx/defnc UseReframe [_]
+  (let [count (<-sub [:counter])]
+    [:div
+     [:strong "UseReframe"]
+     " "
+     [:button {:on-click #(re-frame.core/dispatch [:inc])}
+      count]]))
+
 (hx/defnc App [_]
   [:div
    [UseState]
-   [UseAtom]])
+   [UseAtom]
+   [UseReframe]])
 
 (react-dom/render (hx/f [App]) (js/document.getElementById "app"))
